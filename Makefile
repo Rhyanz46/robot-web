@@ -31,3 +31,5 @@ remove-setting:
 restart:
 	sudo systemctl restart backend.service
 
+see-log:
+	journalctl -u backend.service | tail -n 2
