@@ -11,16 +11,22 @@ unpack:
 	- rm -r result/frontend
 	unzip result/frontend.zip -d result/frontend
 
-remove-driver:
+setting-driver:
 	systemd --version
 	echo "[Unit]\nDescription=Robot Web Backend Driver\nWants=network.target\nAfter=syslog.target network-online.target\n\n[Service]\nType=simple\nExecStart=/home/rhyanz46/robot-web/result/chromedriver\nRestart=on-failure\nRestartSec=10\nKillMode=process\n\n[Install]\nWantedBy=multi-user.target" result/backend-driver.service
-	sudo mv result/driver.service /etc/systemd/system/driver.service
-	sudo chmod 640 /etc/systemd/system/driver.service
-	- systemctl status driver.service
+	sudo mv result/backend-driver.service /etc/systemd/system/backend-driver.service
+	sudo chmod 640 /etc/systemd/system/backend-driver.service
+	- systemctl status backend-driver.service
 	sudo systemctl daemon-reload
-	sudo systemctl enable driver
-	sudo systemctl start driver
-	sudo systemctl status driver.service
+	sudo systemctl enable backend-driver
+	sudo systemctl start backend-driver
+	sudo systemctl status backend-driver.service
+
+remove-driver-setting:
+	sudo systemctl stop backend-driver.service
+	sudo systemctl disable backend-driver.service
+	sudo rm /etc/systemd/system/backend-driver.service
+	sudo systemctl daemon-reload
 
 setting:
 	systemd --version
