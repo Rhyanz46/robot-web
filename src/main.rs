@@ -65,7 +65,7 @@ async fn tess(_: HttpRequest) -> HttpResponse{
             thread::sleep(Duration::from_secs(4));
         }
     });
-    HttpResponse::Ok().body("ok tess")
+    HttpResponse::Ok().body("ok tes public")
 }
 
 fn init_routes(config: &mut web::ServiceConfig) {

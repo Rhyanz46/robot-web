@@ -21,3 +21,6 @@ setting:
 	sudo systemctl enable backend
 	sudo systemctl start backend
 	sudo systemctl status backend.service
+
+restart:
+	sudo systemctl restart backend.service
