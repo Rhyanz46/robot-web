@@ -1,0 +1,15 @@
+[package]
+name = "robotweb"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+tokio = { version = "1", features = ["full"] }
+thirtyfour = "0.31.0"
+color-eyre = "0.5"
+actix-web = "4.3.1"
+serde = "1.0.154"
+validator = "0.16.0"
+actix-cors = "0.6.4"
