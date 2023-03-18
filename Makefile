@@ -1,4 +1,4 @@
-all: 
+build: 
 	cargo build --release
 	- rm -r result
 	- mkdir result
