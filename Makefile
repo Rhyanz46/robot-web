@@ -12,7 +12,7 @@ unpack:
 	unzip result/frontend.zip -d result/frontend
 	- sudo rm -r /var/www/html/robot-web
 	- sudo mkdir /var/www/html/robot-web
-	sudo cp -r frontend/robot-web/dist/* /var/www/html/robot-web
+	sudo cp -r result/frontend/robot-web/dist/* /var/www/html/robot-web
 
 setting-driver:
 	systemd --version
