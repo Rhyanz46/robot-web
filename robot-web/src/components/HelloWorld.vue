@@ -24,14 +24,15 @@
           ></v-select>
         </v-col>
         <v-col cols="12">
-          <v-select
+          <!-- <v-select
             :disabled="diamonSelected == ''"
             v-model="hpSelected"
             :items="hp_list"
             :rules="[v => !!v || 'Item is required']"
             label="Pilih Nomor HP"
             required
-          ></v-select>
+          ></v-select> -->
+          <v-text-field label="Masukkan Nomor HP" :disabled="diamonSelected == ''" v-model="hpSelected"></v-text-field>
         </v-col>
         <v-col cols="12">
           <v-btn
