@@ -16,7 +16,7 @@ setting:
 	echo "[Unit]\nDescription=Robot Web Backend \nWants=network.target\nAfter=syslog.target network-online.target\n\n[Service]\nType=simple\nExecStart=`pwd`/result/robotweb\nRestart=on-failure\nRestartSec=10\nKillMode=process\n\n[Install]\nWantedBy=multi-user.target" > result/backend.service
 	sudo mv result/backend.service /etc/systemd/system/backend.service
 	sudo chmod 640 /etc/systemd/system/backend.service
-	systemctl status backend.service
+	- systemctl status backend.service
 	sudo systemctl daemon-reload
 	sudo systemctl enable backend
 	sudo systemctl start backend
