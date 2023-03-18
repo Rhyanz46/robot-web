@@ -111,7 +111,7 @@
     if (pubgId.value == ""){
       return
     }
-    axios.post("http://localhost:8888/buy", {
+    axios.post("http://server.ariansaputra.com:8888/buy", {
       "pubg_id": pubgId.value,
       "hp": hpSelected.value,
     }	)
@@ -130,7 +130,7 @@
       return
     }
     pubgLoading.value = true
-    axios.post("http://localhost:8888/check-id", {
+    axios.post("http://server.ariansaputra.com:8888/check-id", {
       "pubg_id": pubgId.value
     }	)
     .then(response => {
