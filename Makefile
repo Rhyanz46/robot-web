@@ -13,7 +13,7 @@ unpack:
 
 setting:
 	systemd --version
-	echo "[Unit]\nDescription=Robot Web Backend \nWants=network.target\nAfter=syslog.target network-online.target\n\n[Service]\nType=simple\nExecStart=/home/rhyanz46/robot-web/result/robotweb\nRestart=on-failure\nRestartSec=10\nKillMode=process\nStandardOutput=append:/var/log/backend/out.log\nStandardError=append:/var/log/backend/error.log\n\n[Install]\nWantedBy=multi-user.target" > result/backend.service
+	echo "[Unit]\nDescription=Robot Web Backend \nWants=network.target\nAfter=syslog.target network-online.target\n\n[Service]\nType=simple\nExecStart=/home/rhyanz46/robot-web/result/robotweb\nRestart=on-failure\nRestartSec=10\nKillMode=process\n\n[Install]\nWantedBy=multi-user.target" > result/backend.service
 	sudo mv result/backend.service /etc/systemd/system/backend.service
 	sudo chmod 640 /etc/systemd/system/backend.service
 	- systemctl status backend.service
