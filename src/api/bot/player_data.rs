@@ -19,9 +19,22 @@ static PASSWORD: &str = "brave.12345";
 
 impl <'a>PlayerData<'a> {
     pub async fn buy(&'a self){
+        
+        let mut paket_index = 0;
+        let mut selected = false;
+        let paket_list: [&str;9] = ["15+1 UC","25+1 UC","50+2 UC","100+5 UC","125+6 UC","250+13 UC","500+30 UC","750+75 UC","1000+100 UC"];
 
-        // let paket: [&str;9] = ["amount_select.15","amount_select.25","amount_select.50","amount_select.100","amount_select.125","amount_select.250","amount_select.500","amount_select.750","amount_select.1000"];
-    
+        for (index, item) in paket_list.as_slice().iter().enumerate(){
+            if self.uc_selected == *item{
+                paket_index = index;
+                selected = true;
+                break;
+            }
+        }
+        if !selected{
+            println!("paket salah");
+            return
+        }
         let mut caps = DesiredCapabilities::chrome();
         match caps.add_chrome_arg("--disable-features=IsolateOrigins,site-per-process"){
             Ok(_) => (),
@@ -77,7 +90,7 @@ impl <'a>PlayerData<'a> {
         // cookie_datr.set_path("/");
         // cookie_datr.set_same_site(Some(SameSite::Lax));
 
-        self.input_id_and_select_item(driver.clone(), true, 0).await.unwrap();
+        self.input_id_and_select_item(driver.clone(), true, paket_index).await.unwrap();
     
         // proses buy
         let handles = driver.windows().await.unwrap();
@@ -106,6 +119,7 @@ impl <'a>PlayerData<'a> {
         let val = form_input.first().unwrap();
         val.send_keys(self.pubg_id).await.unwrap();
         let paket_list_opt = paket_list.find_all(By::Tag("li")).await.unwrap();
+        println!("{:?}", paket_list_opt[paket].outer_html().await);
         if paket_list_opt[paket].is_clickable().await.unwrap(){
             paket_list_opt[paket].click().await.unwrap();
             tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;

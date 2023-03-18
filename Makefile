@@ -55,4 +55,4 @@ log-backend:
 	journalctl -u backend.service  --follow
 
 log-driver:
-	journalctl -u backend.service  --follow
+	journalctl -u backend-driver.service  --follow
