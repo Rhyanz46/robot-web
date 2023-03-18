@@ -3,6 +3,7 @@ build:
 	- rm -r result
 	- mkdir result
 	- mv target/release/robotweb result/
+	- cp chromedriver result/ && echo "chromedriver tidak ada"
 	cd robot-web/ && yarn build 
 	zip -r result/frontend.zip robot-web/dist/
 

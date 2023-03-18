@@ -115,6 +115,7 @@
     axios.post("http://server.ariansaputra.com:8888/buy", {
       "pubg_id": pubgId.value,
       "hp": hpSelected.value,
+      "uc": ucSelected.value
     }	)
     .then(response => {
       // handle response
