@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 pub struct Buy {
     pub hp: String,
     pub pubg_id: String,
+    pub uc: String,
 }
 
 #[derive(Deserialize, Serialize, Clone)]

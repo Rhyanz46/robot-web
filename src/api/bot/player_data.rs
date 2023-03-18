@@ -10,6 +10,7 @@ use thirtyfour::prelude::*;
 pub struct PlayerData<'a> {
     pub pubg_id: &'a str,
     pub hp_selected: &'a str,
+    pub uc_selected: &'a str,
 }
 
 static EMAIL: &str = "bravemarioline@gmail.com";
@@ -242,6 +243,6 @@ impl <'a>PlayerData<'a> {
         bb.click().await.unwrap();
         self.login_basic(driver.clone()).await;
         tokio::time::sleep(tokio::time::Duration::from_millis(5000)).await;
-        return self.input_id_and_select_item(driver.clone(), false).await;
+        return self.input_id_and_select_item(driver.clone(), false, 0).await;
     }
 }

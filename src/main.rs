@@ -23,6 +23,7 @@ async fn buy(data: web::Json<Buy>) -> HttpResponse {
         let player= PlayerData{
             pubg_id: &data.pubg_id, 
             hp_selected: &data.hp,
+            uc_selected: &data.uc,
         };
         player.buy().await;
     });
@@ -38,6 +39,7 @@ async fn check_id(data: web::Json<CheckId>) -> HttpResponse {
     let player= PlayerData{
         pubg_id: &data.pubg_id, 
         hp_selected: "",
+        uc_selected: "",
     };
     let get_name_res = player.check_id().await;
     match get_name_res {

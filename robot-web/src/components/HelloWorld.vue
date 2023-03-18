@@ -16,23 +16,23 @@
         <v-col cols="12">
           <v-select
             :disabled="pubgName == ''"
-            v-model="diamonSelected"
-            :items="diamon_list"
+            v-model="ucSelected"
+            :items="uc_list"
             :rules="[v => !!v || 'Item is required']"
-            label="Pilih Jumlah Diamon"
+            label="Pilih Jumlah UC"
             required
           ></v-select>
         </v-col>
         <v-col cols="12">
           <!-- <v-select
-            :disabled="diamonSelected == ''"
+            :disabled="ucSelected == ''"
             v-model="hpSelected"
             :items="hp_list"
             :rules="[v => !!v || 'Item is required']"
             label="Pilih Nomor HP"
             required
           ></v-select> -->
-          <v-text-field label="Masukkan Nomor HP" :disabled="diamonSelected == ''" v-model="hpSelected"></v-text-field>
+          <v-text-field label="Masukkan Nomor HP" :disabled="ucSelected == ''" v-model="hpSelected"></v-text-field>
         </v-col>
         <v-col cols="12">
           <v-btn
@@ -50,7 +50,6 @@
               size="large"
               start
             />
-
             Beli
           </v-btn>
         </v-col>
@@ -87,21 +86,21 @@
   const pubgLoading = ref(false);
   const pubgName = ref("");
   const result = reactive({message: "", status: 200, finish: false});
-  const diamonSelected = ref("");
+  const ucSelected = ref("");
   const hpSelected = ref("");
   const hp_list = ref([
     '085337949499',
     '085238138513',
   ])
-  const diamon_list = ref([
-    '1 Diamon',
-    '2 Diamon',
-    '5 Diamon',
-    '10 Diamon',
-    '25 Diamon',
-    '50 Diamon',
-    '100 Diamon',
-    '1000 Diamon',
+  const uc_list = ref([
+    '1 UC',
+    '2 UC',
+    '5 UC',
+    '10 UC',
+    '25 UC',
+    '50 UC',
+    '100 UC',
+    '1000 UC',
   ])
 
   function beli(){
@@ -144,7 +143,7 @@
       pubgId.value = ""
       pubgName.value = ""
       pubgLoading.value = false
-      diamonSelected.value = ""
+      ucSelected.value = ""
       hpSelected.value = ""
     });
   }
@@ -152,7 +151,7 @@
   watch(pubgId, (val, _) => {
     if (val == ""){
       pubgName.value = ""
-      diamonSelected.value = ""
+      ucSelected.value = ""
       hpSelected.value = ""
     }
   })
