@@ -32,4 +32,4 @@ restart:
 	sudo systemctl restart backend.service
 
 see-log:
-	journalctl -u backend.service | tail -n 2
+	journalctl -u backend.service  --follow
