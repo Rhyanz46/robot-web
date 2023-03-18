@@ -22,5 +22,12 @@ setting:
 	sudo systemctl start backend
 	sudo systemctl status backend.service
 
+remove-setting:
+	sudo systemctl stop backend.service
+	sudo systemctl disable backend.service
+	sudo rm /etc/systemd/system/backend.service
+	sudo systemctl daemon-reload
+
 restart:
 	sudo systemctl restart backend.service
+
