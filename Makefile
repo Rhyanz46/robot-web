@@ -48,5 +48,8 @@ remove-setting:
 restart:
 	sudo systemctl restart backend.service
 
-see-log:
+log-backend:
+	journalctl -u backend.service  --follow
+
+log-driver:
 	journalctl -u backend.service  --follow
