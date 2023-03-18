@@ -3,13 +3,13 @@ build:
 	- rm -r result
 	- mkdir result
 	- mv target/release/robotweb result/
-	- cp chromedriver result/ && echo "chromedriver tidak ada"
 	cd robot-web/ && yarn build 
 	zip -r result/frontend.zip robot-web/dist/
 
 unpack:
 	- rm -r result/frontend
 	unzip result/frontend.zip -d result/frontend
+	- cp chromedriver result/ && echo "chromedriver tidak ada"
 	- sudo rm -r /var/www/html/robot-web
 	- sudo mkdir /var/www/html/robot-web
 	sudo cp -r result/frontend/robot-web/dist/* /var/www/html/robot-web
