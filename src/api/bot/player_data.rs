@@ -76,7 +76,7 @@ impl <'a>PlayerData<'a> {
         // cookie_datr.set_path("/");
         // cookie_datr.set_same_site(Some(SameSite::Lax));
 
-        self.input_id_and_select_item(driver.clone(), true).await.unwrap();
+        self.input_id_and_select_item(driver.clone(), true, 0).await.unwrap();
     
         // proses buy
         let handles = driver.windows().await.unwrap();
@@ -98,16 +98,15 @@ impl <'a>PlayerData<'a> {
         driver.quit().await.unwrap();
     }
 
-    async fn input_id_and_select_item(&'a self, driver: WebDriver, buy: bool) -> Result<String, String>{
+    async fn input_id_and_select_item(&'a self, driver: WebDriver, buy: bool, paket: usize) -> Result<String, String>{
         let player_name;
         let form_input = driver.find_all(By::ClassName("input")).await.unwrap();
         let paket_list = driver.find(By::ClassName("game-pay-section")).await.unwrap();
         let val = form_input.first().unwrap();
         val.send_keys(self.pubg_id).await.unwrap();
         let paket_list_opt = paket_list.find_all(By::Tag("li")).await.unwrap();
-        let paket_index = 0;
-        if paket_list_opt[paket_index].is_clickable().await.unwrap(){
-            paket_list_opt[paket_index].click().await.unwrap();
+        if paket_list_opt[paket].is_clickable().await.unwrap(){
+            paket_list_opt[paket].click().await.unwrap();
             tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
             let btnbuy = driver.find(By::Id("buy-payBtn")).await.unwrap();
             if btnbuy.is_clickable().await.unwrap(){
