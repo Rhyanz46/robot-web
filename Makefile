@@ -8,5 +8,5 @@ all:
 	zip -r result/frontend.zip robot-web/dist/
 
 unpack:
-	rm -r result/frontend
+	- rm -r result/frontend
 	unzip result/frontend.zip -d result/frontend
