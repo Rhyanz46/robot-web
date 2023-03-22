@@ -16,7 +16,7 @@ unpack:
 setting-driver:
 	systemd --version
 	cp chromedriver result/ && echo "chromedriver ada"
-	echo "[Unit]\nDescription=Robot Web Backend Driver\nWants=network.target\nAfter=syslog.target network-online.target\n\n[Service]\nType=simple\nUser=$USER\nGroup=admin\nExecStart=`pwd`/result/chromedriver\nRestart=on-failure\nRestartSec=10\nKillMode=process\n\n[Install]\nWantedBy=multi-user.target" > result/backend-driver.service
+	echo "[Unit]\nDescription=Robot Web Backend Driver\nWants=network.target\nAfter=syslog.target network-online.target\n\n[Service]\nType=simple\nUser=`$USER`\nGroup=admin\nExecStart=`pwd`/result/chromedriver\nRestart=on-failure\nRestartSec=10\nKillMode=process\n\n[Install]\nWantedBy=multi-user.target" > result/backend-driver.service
 	sudo mv result/backend-driver.service /etc/systemd/system/backend-driver.service
 	sudo chmod 640 /etc/systemd/system/backend-driver.service
 	- systemctl status backend-driver.service
@@ -33,7 +33,7 @@ remove-driver-setting:
 
 setting:
 	systemd --version
-	echo "[Unit]\nDescription=Robot Web Backend \nWants=network.target\nAfter=syslog.target network-online.target\n\n[Service]\nType=simple\nExecStart=`pwd`/result/robotweb\nRestart=on-failure\nRestartSec=10\nKillMode=process\n\n[Install]\nWantedBy=multi-user.target" > result/backend.service
+	echo "[Unit]\nDescription=Robot Web Backend \nWants=network.target\nAfter=syslog.target network-online.target\n\n[Service]\nType=simple\nUser=`$USER`\nGroup=admin\nExecStart=`pwd`/result/robotweb\nRestart=on-failure\nRestartSec=10\nKillMode=process\n\n[Install]\nWantedBy=multi-user.target" > result/backend.service
 	sudo mv result/backend.service /etc/systemd/system/backend.service
 	sudo chmod 640 /etc/systemd/system/backend.service
 	- systemctl status backend.service
