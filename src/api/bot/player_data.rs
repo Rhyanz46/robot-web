@@ -250,7 +250,10 @@ impl <'a>PlayerData<'a> {
             Some(aval) => {
                 aval.click().await.unwrap();
             },
-            None=> println!("tidak ada close button")
+            None=> {
+                driver.clone().quit().await.unwrap();
+                println!("tidak ada close button");
+            }
         }
         let b = driver.find(By::ClassName("eea-pop")).await.unwrap();
         let bb = b.find(By::ClassName("close-btn")).await.unwrap();
