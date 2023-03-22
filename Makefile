@@ -50,6 +50,7 @@ remove-setting:
 
 restart:
 	sudo systemctl restart backend.service
+	sudo systemctl restart backend-driver.service
 
 log-backend:
 	journalctl -u backend.service  --follow
