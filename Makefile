@@ -9,14 +9,14 @@ build:
 unpack:
 	- rm -r result/frontend
 	unzip result/frontend.zip -d result/frontend
-	- cp chromedriver result/ && echo "chromedriver tidak ada"
+	- cp chromedriver result/ && echo "chromedriver ada"
 	- sudo rm -r /var/www/html/robot-web
 	- sudo mkdir /var/www/html/robot-web
 	sudo cp -r result/frontend/robot-web/dist/* /var/www/html/robot-web
 
 setting-driver:
 	systemd --version
-	echo "[Unit]\nDescription=Robot Web Backend Driver\nWants=network.target\nAfter=syslog.target network-online.target\n\n[Service]\nType=simple\nExecStart=/home/rhyanz46/robot-web/result/chromedriver\nRestart=on-failure\nRestartSec=10\nKillMode=process\n\n[Install]\nWantedBy=multi-user.target" > result/backend-driver.service
+	echo "[Unit]\nDescription=Robot Web Backend Driver\nWants=network.target\nAfter=syslog.target network-online.target\n\n[Service]\nType=simple\nExecStart=`pwd`/result/chromedriver\nRestart=on-failure\nRestartSec=10\nKillMode=process\n\n[Install]\nWantedBy=multi-user.target" > result/backend-driver.service
 	sudo mv result/backend-driver.service /etc/systemd/system/backend-driver.service
 	sudo chmod 640 /etc/systemd/system/backend-driver.service
 	- systemctl status backend-driver.service
@@ -33,7 +33,7 @@ remove-driver-setting:
 
 setting:
 	systemd --version
-	echo "[Unit]\nDescription=Robot Web Backend \nWants=network.target\nAfter=syslog.target network-online.target\n\n[Service]\nType=simple\nExecStart=/home/rhyanz46/robot-web/result/robotweb\nRestart=on-failure\nRestartSec=10\nKillMode=process\n\n[Install]\nWantedBy=multi-user.target" > result/backend.service
+	echo "[Unit]\nDescription=Robot Web Backend \nWants=network.target\nAfter=syslog.target network-online.target\n\n[Service]\nType=simple\nExecStart=`pwd`/result/robotweb\nRestart=on-failure\nRestartSec=10\nKillMode=process\n\n[Install]\nWantedBy=multi-user.target" > result/backend.service
 	sudo mv result/backend.service /etc/systemd/system/backend.service
 	sudo chmod 640 /etc/systemd/system/backend.service
 	- systemctl status backend.service

@@ -1,2 +1,4 @@
 /target
 /result/frontend
+/result/chromedriver*
+chromedriver*
