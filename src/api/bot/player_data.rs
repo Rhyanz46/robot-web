@@ -257,6 +257,15 @@ impl <'a>PlayerData<'a> {
         bb.click().await.unwrap();
         self.login_basic(driver.clone()).await;
         tokio::time::sleep(tokio::time::Duration::from_millis(5000)).await;
-        return self.input_id_and_select_item(driver.clone(), false, 0).await;
+        let get_name_res = self.input_id_and_select_item(driver.clone(), false, 0).await;
+        driver.quit().await.unwrap();
+        match get_name_res {
+            Ok(get_name) => {
+                return Ok(get_name);
+            },
+            Err(msg) => {
+                return Err(msg);
+            }
+        }
     }
 }
