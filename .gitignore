@@ -2,3 +2,4 @@
 /result/frontend
 /result/chromedriver*
 chromedriver*
+.env

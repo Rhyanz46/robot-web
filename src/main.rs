@@ -1,5 +1,7 @@
 mod api;
 mod validation;
+mod db;
+pub mod models;
 
 use std::time::Duration;
 use tokio::task;
@@ -8,6 +10,8 @@ use actix_web::{get, post, web, App, HttpRequest, HttpServer, HttpResponse, midd
 use std::thread;
 use validation::{Buy, Res, CheckId};
 use actix_cors::Cors;
+
+// use db::establish_connection;
 
 
 #[get("/")]
@@ -79,6 +83,11 @@ fn init_routes(config: &mut web::ServiceConfig) {
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
+
+    // establish_connection();
+
+    println!("starting");
+
     HttpServer::new(|| {
         App::new()
             .wrap(Logger::default())
