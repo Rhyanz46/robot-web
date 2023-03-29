@@ -193,11 +193,12 @@ impl <'a>PlayerData<'a> {
                 Err(eerr) => {
                     if current_try>max_try{
                         println!("error input_id : {}", eerr);
-                        break
+                        driver.quit().await.unwrap();
+                        return;
                     }
                     println!("error input_id : {}, try again", eerr);
+                    tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
                     // put_back_port(port);
-                    return;
                 }
             }
         }
@@ -227,7 +228,29 @@ impl <'a>PlayerData<'a> {
     async fn input_id_and_select_item(&'a self, driver: WebDriver, buy: bool, paket: usize) -> Result<String, String>{
         let player_name;
         let form_input = driver.find_all(By::ClassName("input")).await.unwrap();
-        let paket_list = driver.find(By::ClassName("game-pay-section")).await.unwrap();
+        // let paket_list = driver.find(By::ClassName("game-pay-section")).await.unwrap();
+        let paket_list: WebElement;
+        let max_try = 10;
+        let mut current_try = 0;
+        loop {
+            current_try+=1;
+            let paket_list_res = driver.find(By::ClassName("game-pay-section")).await;
+            match paket_list_res {
+                Ok(paket_list_x) => {
+                    paket_list = paket_list_x;
+                    break
+                },
+                Err(_) => {
+                    if current_try>max_try{
+                        println!("tidak bisa hit game-pay-section");
+                        driver.quit().await.unwrap();
+                        return Err("tidak bisa hit game-pay-section".to_string());
+                    }
+                    println!("tidak bisa hit game-pay-section, try again");
+                    tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
+                }
+            }
+        }
         let val = form_input.first().unwrap();
         val.send_keys(self.pubg_id).await.unwrap();
         let paket_list_opt = paket_list.find_all(By::Tag("li")).await.unwrap();
