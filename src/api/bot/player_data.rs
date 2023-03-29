@@ -2,6 +2,13 @@
 // use actix_web::cookie::SameSite;
 use thirtyfour::prelude::*;
 use actix_web::web::Data;
+use lazy_static::lazy_static;
+use std::sync::Mutex;
+use color_eyre::owo_colors::OwoColorize;
+// use std::process::Command;
+// use thirtyfour::Key::Command;
+
+use tokio::process::Command as AsyncCommand;
 
 use crate::db::Database;
 
@@ -19,9 +26,79 @@ pub struct PlayerData<'a> {
 static EMAIL: &str = "bravemarioline@gmail.com";
 static PASSWORD: &str = "brave.12345";
 
+lazy_static! {
+    static ref PORT_ON_USING: Mutex<Vec<String>> = Mutex::new(Vec::new());
+    static ref IDDLE_PORT: Mutex<Vec<String>> = Mutex::new(vec![
+        "4455".to_string(), "3322".to_string(),
+        "8844".to_string(), "1100".to_string(),
+        "1122".to_string(), "2233".to_string(),
+        "3377".to_string(), "3322".to_string(),
+        "6677".to_string(), "9900".to_string()
+    ]);
+}
+
+
+pub fn get_port() -> Option<String> {
+    let mut iddle = IDDLE_PORT.lock().unwrap();
+    let mut on_using = PORT_ON_USING.lock().unwrap();
+    let port_selected: String;
+    if iddle.len() == 0{
+        return None
+    }
+    port_selected = iddle[0].to_string();
+    on_using.push(port_selected.clone());
+    for (i, v) in iddle.iter().enumerate() {
+        if v == &port_selected{
+            iddle.remove(i);
+            break
+        }
+    }
+    AsyncCommand::new("sh")
+        .arg("-c")
+        .arg(format!("./chromedriver --port={} &", port_selected))
+        .spawn().expect("TODO: panic message");
+        // .expect("Failed to execute command");
+
+    // println!("Output: {}", String::from_utf8_lossy(&output.stdout));
+    Some(port_selected)
+}
+
+pub fn put_back_port(port: String){
+    AsyncCommand::new("sh")
+        .arg("-c")
+        .arg(format!("kill -9 `lsof -t -i:{}` ", port))
+        // .arg("sudo kill -9 `lsof -t -i:3322` ")
+        .spawn().expect("TODO: panic message");
+    let mut iddle = IDDLE_PORT.lock().unwrap();
+    let mut on_using = PORT_ON_USING.lock().unwrap();
+    for v in iddle.iter() {
+        if v == &port{
+            return
+        }
+    }
+    for (i, v) in on_using.iter().enumerate() {
+        if v == &port{
+            on_using.remove(i);
+            break
+        }
+    }
+    iddle.push(port);
+
+}
+
+
 
 impl <'a>PlayerData<'a> {
     pub async fn buy(&'a self){
+        let port: String;
+        let port_res = get_port();
+        match port_res {
+            Some(res) => {port = res},
+            None=>{
+                println!("mencapai limit");
+                return;
+            }
+        }
         let mut paket_index = 0;
         let mut selected = false;
         let paket_list: [&str;9] = ["15+1 UC","25+1 UC","50+2 UC","100+5 UC","125+6 UC","250+13 UC","500+30 UC","750+75 UC","1000+100 UC"];
@@ -35,19 +112,17 @@ impl <'a>PlayerData<'a> {
         }
         if !selected{
             println!("paket salah");
+            put_back_port(port);
             return
         }
         println!("start pembelian {} ke akun {} menggunakan {}", self.uc_selected, self.pubg_id, self.hp_selected);
         let mut caps = DesiredCapabilities::chrome();
-        match caps.add_chrome_arg("--disable-features=IsolateOrigins,site-per-process"){
-            Ok(_) => (),
-            Err(_) => println!("error running on mode non isolate")
-        };
-        match caps.add_chrome_arg("--headless"){
+        match caps.add_arg("--headless"){
             Ok(_) => (),
             Err(_) => println!("error running background")
         };
-        let driver = WebDriver::new("http://localhost:9515", caps).await.unwrap();
+        // let driver = WebDriver::new_session(SessionSettings::default(), caps).await?;
+        let driver = WebDriver::new(&*format!("http://localhost:{}", port), caps).await.unwrap();
         // let cookies = login_fb(driver.clone()).await;
         driver.goto("https://www.midasbuy.com/midasbuy/id/buy/pubgm?sc=os_upoint&from=__mds_buy_duniagames").await.unwrap();
         
@@ -74,6 +149,7 @@ impl <'a>PlayerData<'a> {
                         tokio::time::sleep(tokio::time::Duration::from_millis(200)).await;
                         driver.clone().quit().await.unwrap();
                         println!("tidak ada close button");
+                        put_back_port(port);
                         return
                     }
                     println!("tidak ada close button, we try again");
@@ -106,7 +182,14 @@ impl <'a>PlayerData<'a> {
         // cookie_datr.set_same_site(Some(SameSite::Lax));
 
         println!("buy untuk {} ke akun {} menggunakan {}", self.uc_selected, self.pubg_id, self.hp_selected);
-        self.input_id_and_select_item(driver.clone(), true, paket_index).await.unwrap();
+        let res = self.input_id_and_select_item(driver.clone(), true, paket_index).await;
+        match res {
+            Ok(_) => (),
+            Err(_) => {
+                put_back_port(port);
+                return;
+            }
+        }
     
         // proses buy
         let handles = driver.windows().await.unwrap();
@@ -126,6 +209,7 @@ impl <'a>PlayerData<'a> {
         tokio::time::sleep(tokio::time::Duration::from_millis(5000)).await;
     
         driver.quit().await.unwrap();
+        put_back_port(port);
     }
 
     async fn input_id_and_select_item(&'a self, driver: WebDriver, buy: bool, paket: usize) -> Result<String, String>{
@@ -248,6 +332,15 @@ impl <'a>PlayerData<'a> {
     }
 
     pub async fn check_id(&'a self, db: Data<Database>) -> Result<String, String>{
+        let port: String;
+        let port_res = get_port();
+        match port_res {
+            Some(res) => {port = res},
+            None=>{
+                println!("mencapai limit");
+                return Err("mencapai limit".to_string());
+            }
+        }
         let account_query = db.get_pubg_account(self.pubg_id.to_string());
         match account_query {
             Some(account) => {
@@ -257,15 +350,12 @@ impl <'a>PlayerData<'a> {
         }
         // return Ok("messs".to_string());
         let mut caps = DesiredCapabilities::chrome();
-        match caps.add_chrome_arg("--disable-features=IsolateOrigins,site-per-process"){
-            Ok(_) => (),
-            Err(_) => println!("error running on mode non isolate")
-        };
-        match caps.add_chrome_arg("--headless"){
+        match caps.add_arg("--headless"){
             Ok(_) => (),
             Err(_) => println!("error running background")
         };
-        let driver = WebDriver::new("http://localhost:9515", caps).await.unwrap();
+
+        let driver = WebDriver::new(&*format!("http://localhost:{}", port), caps).await.unwrap();
         driver.goto("https://www.midasbuy.com/midasbuy/id/buy/pubgm?sc=os_upoint&from=__mds_buy_duniagames").await.unwrap();
         let a = driver.find_all(By::ClassName("close-btn")).await.unwrap();
         let aa = a.last();
@@ -275,7 +365,9 @@ impl <'a>PlayerData<'a> {
             },
             None=> {
                 driver.clone().quit().await.unwrap();
-                println!("tidak ada close button");
+                println!("error to close-btn");
+                put_back_port(port);
+                return Err("error to close-btn".to_string());
             }
         }
         let b = driver.find(By::ClassName("eea-pop")).await.unwrap();
@@ -291,6 +383,7 @@ impl <'a>PlayerData<'a> {
                 return Ok(get_name);
             },
             Err(msg) => {
+                put_back_port(port);
                 return Err(msg);
             }
         }

@@ -6,7 +6,7 @@ mod models;
 
 use std::time::Duration;
 use tokio::task;
-use api::bot::player_data::PlayerData;
+use api::bot::player_data::{{PlayerData, get_port, put_back_port}};
 // use actix::{Actor, Addr, System, SystemExit};
 use actix_web::{get, post, web, App, HttpRequest, HttpServer, HttpResponse, middleware::Logger};
 use actix_web::web::Data;
@@ -18,9 +18,16 @@ use db::{Database};
 
 
 #[get("/")]
-async fn index(req: HttpRequest) -> &'static str {
-    println!("REQ: {:?}", req);
-    "Hello world!\r\n"
+async fn index(req: HttpRequest) -> String {
+    match get_port() {
+        Some(res) => {
+            // put_back_port(res.clone());
+            res
+        },
+        None => "gk ada".to_string()
+    }
+    // "aaa".to_string()
+
 }
 
 #[post("/buy")]

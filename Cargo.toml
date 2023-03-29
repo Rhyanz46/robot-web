@@ -7,7 +7,8 @@ edition = "2021"
 
 [dependencies]
 tokio = { version = "1", features = ["full"] }
-thirtyfour = "0.31.0"
+#thirtyfour = "0.31.0"
+thirtyfour = { git = "https://github.com/stevepryde/thirtyfour.git", branch = "main" }
 color-eyre = "0.5"
 actix-web = "4.3.1"
 serde = "1.0.154"
@@ -16,3 +17,5 @@ actix-cors = "0.6.4"
 diesel = { version = "2.0.0", features = ["mysql", "r2d2"] }
 dotenv = "0.15.0"
 diesel_cli = "2.0.1"
+
+lazy_static = "1.4.0"

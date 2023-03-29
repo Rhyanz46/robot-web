@@ -182,7 +182,7 @@ dependencies = [
  "serde_urlencoded",
  "smallvec",
  "socket2",
- "time 0.3.20",
+ "time",
  "url",
 ]
 
@@ -320,6 +320,12 @@ checksum = "9e1b586273c5702936fe7b7d6896644d8be71e6314cfe09d3167c95f712589e8"
 
 [[package]]
 name = "base64"
+version = "0.20.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0ea22880d78093b0cbe17c89f64a7d457941e65759157ec6cb31a31d652b05e5"
+
+[[package]]
+name = "base64"
 version = "0.21.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a4a4ddaa51a5bc52a6948f74c06d20aaaddb71924eab79b8c97a8c556e942d6a"
@@ -409,12 +415,8 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "4e3c5919066adf22df73762e50cffcde3a758f2a848b113b586d1f86728b673b"
 dependencies = [
  "iana-time-zone",
- "js-sys",
  "num-integer",
  "num-traits",
- "serde",
- "time 0.1.45",
- "wasm-bindgen",
  "winapi",
 ]
 
@@ -501,7 +503,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "e859cd57d0710d9e06c381b550c06e76992472a8c6d527aecd2fc673dcc231fb"
 dependencies = [
  "percent-encoding",
- "time 0.3.20",
+ "time",
  "version_check",
 ]
 
@@ -720,9 +722,9 @@ dependencies = [
 
 [[package]]
 name = "fantoccini"
-version = "0.19.3"
+version = "0.20.0-rc.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "65f0fbe245d714b596ba5802b46f937f5ce68dcae0f32f9a70b5c3b04d3c6f64"
+checksum = "f5eb32b0001134a1d3b9e16010eb4b119451edf68446963a30a8130a0d056e98"
 dependencies = [
  "base64 0.13.1",
  "cookie",
@@ -734,7 +736,7 @@ dependencies = [
  "mime",
  "serde",
  "serde_json",
- "time 0.3.20",
+ "time",
  "tokio",
  "url",
  "webdriver",
@@ -872,7 +874,7 @@ checksum = "c05aeb6a22b8f62540c194aac980f2115af067bfe15a0734d7277a768d396b31"
 dependencies = [
  "cfg-if",
  "libc",
- "wasi 0.11.0+wasi-snapshot-preview1",
+ "wasi",
 ]
 
 [[package]]
@@ -1217,7 +1219,7 @@ checksum = "5b9d9a46eff5b4ff64b45a9e316a6d1e0bc719ef429cbec4dc630684212bfdf9"
 dependencies = [
  "libc",
  "log",
- "wasi 0.11.0+wasi-snapshot-preview1",
+ "wasi",
  "windows-sys 0.45.0",
 ]
 
@@ -1511,6 +1513,7 @@ dependencies = [
  "diesel",
  "diesel_cli",
  "dotenv",
+ "lazy_static",
  "serde",
  "thirtyfour",
  "tokio",
@@ -1819,19 +1822,19 @@ checksum = "222a222a5bfe1bba4a77b45ec488a741b3cb8872e5e499451fd7d0129c9c7c3d"
 
 [[package]]
 name = "thirtyfour"
-version = "0.31.0"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "72fc70ad9624071cdd96d034676b84b504bfeb4bee1580df1324c99373ea0ca7"
+version = "0.32.0-rc.6"
+source = "git+https://github.com/stevepryde/thirtyfour.git?branch=main#7ad6ed31e8ce1544ded769dac1265ab5f9a14155"
 dependencies = [
  "async-trait",
- "base64 0.13.1",
- "chrono",
+ "base64 0.20.0",
  "cookie",
  "fantoccini",
  "futures",
  "http",
+ "indexmap",
  "log",
  "parking_lot",
+ "paste",
  "serde",
  "serde_json",
  "serde_repr",
@@ -1840,14 +1843,12 @@ dependencies = [
  "thiserror",
  "tokio",
  "url",
- "urlparse",
 ]
 
 [[package]]
 name = "thirtyfour-macros"
 version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9cae91d1c7c61ec65817f1064954640ee350a50ae6548ff9a1bdd2489d6ffbb0"
+source = "git+https://github.com/stevepryde/thirtyfour.git?branch=main#7ad6ed31e8ce1544ded769dac1265ab5f9a14155"
 dependencies = [
  "proc-macro-error",
  "proc-macro2",
@@ -1883,17 +1884,6 @@ checksum = "3fdd6f064ccff2d6567adcb3873ca630700f00b5ad3f060c25b5dcfd9a4ce152"
 dependencies = [
  "cfg-if",
  "once_cell",
-]
-
-[[package]]
-name = "time"
-version = "0.1.45"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1b797afad3f312d1c66a56d11d0316f916356d11bd158fbc6ca6389ff6bf805a"
-dependencies = [
- "libc",
- "wasi 0.10.0+wasi-snapshot-preview1",
- "winapi",
 ]
 
 [[package]]
@@ -2127,12 +2117,6 @@ dependencies = [
 ]
 
 [[package]]
-name = "urlparse"
-version = "0.7.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "110352d4e9076c67839003c7788d8604e24dcded13e0b375af3efaa8cf468517"
-
-[[package]]
 name = "validator"
 version = "0.16.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -2174,12 +2158,6 @@ dependencies = [
  "log",
  "try-lock",
 ]
-
-[[package]]
-name = "wasi"
-version = "0.10.0+wasi-snapshot-preview1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1a143597ca7c7793eff794def352d41792a93c481eb1042423ff7ff72ba2c31f"
 
 [[package]]
 name = "wasi"
@@ -2265,7 +2243,7 @@ dependencies = [
  "serde",
  "serde_derive",
  "serde_json",
- "time 0.3.20",
+ "time",
  "unicode-segmentation",
  "url",
 ]
