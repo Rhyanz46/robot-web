@@ -14,7 +14,7 @@ use std::thread;
 use validation::{Buy, Res, CheckId};
 use actix_cors::Cors;
 
-use db::{Database,DBPool};
+use db::{Database};
 
 
 #[get("/")]
@@ -90,7 +90,7 @@ async fn main() -> std::io::Result<()> {
     let db = Database::new();
     let db_pool = Data::new(db);
 
-    println!("starting");
+    println!("starting: v1");
 
     HttpServer::new(move || {
         App::new()
