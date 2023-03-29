@@ -1,17 +1,20 @@
 mod api;
 mod validation;
 mod db;
-pub mod models;
+mod schema;
+mod models;
 
 use std::time::Duration;
 use tokio::task;
 use api::bot::player_data::PlayerData;
+// use actix::{Actor, Addr, System, SystemExit};
 use actix_web::{get, post, web, App, HttpRequest, HttpServer, HttpResponse, middleware::Logger};
+use actix_web::web::Data;
 use std::thread;
 use validation::{Buy, Res, CheckId};
 use actix_cors::Cors;
 
-// use db::establish_connection;
+use db::{Database,DBPool};
 
 
 #[get("/")]
@@ -38,14 +41,15 @@ async fn buy(data: web::Json<Buy>) -> HttpResponse {
 }
 
 #[post("/check-id")]
-async fn check_id(data: web::Json<CheckId>) -> HttpResponse {
+async fn check_id(data: web::Json<CheckId>, db: Data<Database>) -> HttpResponse {
     let mut res = data.clone();
     let player= PlayerData{
-        pubg_id: &data.pubg_id, 
+        pubg_id: &data.pubg_id,
         hp_selected: "",
         uc_selected: "",
     };
-    let get_name_res = player.check_id().await;
+
+    let get_name_res = player.check_id(db).await;
     match get_name_res {
         Ok(get_name) => {
             res.player_name = Some(get_name);
@@ -83,13 +87,14 @@ fn init_routes(config: &mut web::ServiceConfig) {
 
 #[tokio::main]
 async fn main() -> std::io::Result<()> {
-
-    // establish_connection();
+    let db = Database::new();
+    let db_pool = Data::new(db);
 
     println!("starting");
 
-    HttpServer::new(|| {
+    HttpServer::new(move || {
         App::new()
+            .app_data(db_pool.clone())
             .wrap(Logger::default())
             .wrap(
                 Cors::default()

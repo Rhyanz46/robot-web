@@ -1,6 +1,9 @@
 use std::collections::HashMap;
 use actix_web::cookie::SameSite;
 use thirtyfour::prelude::*;
+use actix_web::web::Data;
+
+use crate::db::Database;
 
 // struct MidasbuySession {
 //     cookie_control: &'static str
@@ -232,7 +235,15 @@ impl <'a>PlayerData<'a> {
         ).await.unwrap();
     }
 
-    pub async fn check_id(&'a self) -> Result<String, String>{
+    pub async fn check_id(&'a self, db: Data<Database>) -> Result<String, String>{
+        let account_query = db.get_pubg_account(self.pubg_id.to_string());
+        match account_query {
+            Some(account) => {
+                return Ok(account.name);
+            },
+            None => println!("no data in database")
+        }
+        // return Ok("messs".to_string());
         let mut caps = DesiredCapabilities::chrome();
         match caps.add_chrome_arg("--disable-features=IsolateOrigins,site-per-process"){
             Ok(_) => (),
@@ -264,6 +275,7 @@ impl <'a>PlayerData<'a> {
         driver.quit().await.unwrap();
         match get_name_res {
             Ok(get_name) => {
+                db.set_pubg_account(get_name.to_string(), self.pubg_id.to_string());
                 return Ok(get_name);
             },
             Err(msg) => {
