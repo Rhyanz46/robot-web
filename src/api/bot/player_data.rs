@@ -183,14 +183,25 @@ impl <'a>PlayerData<'a> {
         // cookie_datr.set_same_site(Some(SameSite::Lax));
 
         println!("buy untuk {} ke akun {} menggunakan {}", self.uc_selected, self.pubg_id, self.hp_selected);
-        let res = self.input_id_and_select_item(driver.clone(), true, paket_index).await;
-        match res {
-            Ok(_) => (),
-            Err(_) => {
-                // put_back_port(port);
-                return;
+        let max_try = 10;
+        let mut current_try = 0;
+        loop {
+            current_try+=1;
+            let res = self.input_id_and_select_item(driver.clone(), true, paket_index).await;
+            match res {
+                Ok(_) => {break},
+                Err(eerr) => {
+                    if current_try>max_try{
+                        println!("error input_id : {}", eerr);
+                        break
+                    }
+                    println!("error input_id : {}, try again", eerr);
+                    // put_back_port(port);
+                    return;
+                }
             }
         }
+
     
         // proses buy
         let handles = driver.windows().await.unwrap();
