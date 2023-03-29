@@ -56,18 +56,28 @@ impl <'a>PlayerData<'a> {
         //     let tem_cookie = Cookie::new(item.name(), item.value());
         //     driver.add_cookie(item.clone()).await.unwrap();
         // }
-    
-    
-        let a = driver.find_all(By::ClassName("close-btn")).await.unwrap();
-        let aa = a.last();
-        match aa {
-            Some(aval) => {
-                aval.click().await.unwrap();
-            },
-            None=> {
-                driver.clone().quit().await.unwrap();
-                println!("tidak ada close button");
-                return
+
+
+        let max_try_close = 3;
+        let mut current_try_close = 0;
+        loop {
+            current_try_close+=1;
+            let a = driver.find_all(By::ClassName("close-btn")).await.unwrap();
+            let aa = a.last();
+            match aa {
+                Some(aval) => {
+                    aval.click().await.unwrap();
+                    break
+                },
+                None=> {
+                    if current_try_close > max_try_close{
+                        tokio::time::sleep(tokio::time::Duration::from_millis(200)).await;
+                        driver.clone().quit().await.unwrap();
+                        println!("tidak ada close button");
+                        return
+                    }
+                    println!("tidak ada close button, we try again");
+                }
             }
         }
     
@@ -122,7 +132,6 @@ impl <'a>PlayerData<'a> {
         let val = form_input.first().unwrap();
         val.send_keys(self.pubg_id).await.unwrap();
         let paket_list_opt = paket_list.find_all(By::Tag("li")).await.unwrap();
-        println!("{:?}", paket_list_opt[paket].outer_html().await);
         if paket_list_opt[paket].is_clickable().await.unwrap(){
             paket_list_opt[paket].click().await.unwrap();
             tokio::time::sleep(tokio::time::Duration::from_millis(100)).await;
