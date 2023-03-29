@@ -22,7 +22,6 @@ static PASSWORD: &str = "brave.12345";
 
 impl <'a>PlayerData<'a> {
     pub async fn buy(&'a self){
-        
         let mut paket_index = 0;
         let mut selected = false;
         let paket_list: [&str;9] = ["15+1 UC","25+1 UC","50+2 UC","100+5 UC","125+6 UC","250+13 UC","500+30 UC","750+75 UC","1000+100 UC"];
@@ -38,6 +37,7 @@ impl <'a>PlayerData<'a> {
             println!("paket salah");
             return
         }
+        println!("start pembelian {} ke akun {} menggunakan {}", self.uc_selected, self.pubg_id, self.hp_selected);
         let mut caps = DesiredCapabilities::chrome();
         match caps.add_chrome_arg("--disable-features=IsolateOrigins,site-per-process"){
             Ok(_) => (),
@@ -84,9 +84,10 @@ impl <'a>PlayerData<'a> {
         let b = driver.find(By::ClassName("eea-pop")).await.unwrap();
         let bb = b.find(By::ClassName("close-btn")).await.unwrap();
         bb.click().await.unwrap();
-    
+
+        println!("start login untuk {} ke akun {} menggunakan {}", self.uc_selected, self.pubg_id, self.hp_selected);
         self.login_basic(driver.clone()).await;
-        println!("login success");
+        println!("login success untuk {} ke akun {} menggunakan {}", self.uc_selected, self.pubg_id, self.hp_selected);
     
         // select_login_fb(driver.clone()).await;
     
@@ -96,6 +97,7 @@ impl <'a>PlayerData<'a> {
         // driver.refresh().await.unwrap();
     
         // driver.add_cookie(cookie_datr).await.unwrap();
+        println!("wait 5 second untuk {} ke akun {} menggunakan {}", self.uc_selected, self.pubg_id, self.hp_selected);
         tokio::time::sleep(tokio::time::Duration::from_millis(5000)).await;
 
         // let mut cookie_datr = Cookie::new("arian", "test");
@@ -103,6 +105,7 @@ impl <'a>PlayerData<'a> {
         // cookie_datr.set_path("/");
         // cookie_datr.set_same_site(Some(SameSite::Lax));
 
+        println!("buy untuk {} ke akun {} menggunakan {}", self.uc_selected, self.pubg_id, self.hp_selected);
         self.input_id_and_select_item(driver.clone(), true, paket_index).await.unwrap();
     
         // proses buy
