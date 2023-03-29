@@ -19,14 +19,14 @@ use db::{Database};
 
 #[get("/")]
 async fn index(req: HttpRequest) -> String {
-    match get_port() {
-        Some(res) => {
-            // put_back_port(res.clone());
-            res
-        },
-        None => "gk ada".to_string()
-    }
-    // "aaa".to_string()
+    // match get_port() {
+    //     Some(res) => {
+    //         // put_back_port(res.clone());
+    //         res
+    //     },
+    //     None => "gk ada".to_string()
+    // }
+    "aaa".to_string()
 
 }
 
