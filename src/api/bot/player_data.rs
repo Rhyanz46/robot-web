@@ -90,15 +90,15 @@ pub fn put_back_port(port: String){
 
 impl <'a>PlayerData<'a> {
     pub async fn buy(&'a self){
-        let port: String;
-        let port_res = get_port();
-        match port_res {
-            Some(res) => {port = res},
-            None=>{
-                println!("mencapai limit");
-                return;
-            }
-        }
+        // let port: String;
+        // let port_res = get_port();
+        // match port_res {
+        //     Some(res) => {port = res},
+        //     None=>{
+        //         println!("mencapai limit");
+        //         return;
+        //     }
+        // }
         let mut paket_index = 0;
         let mut selected = false;
         let paket_list: [&str;9] = ["15+1 UC","25+1 UC","50+2 UC","100+5 UC","125+6 UC","250+13 UC","500+30 UC","750+75 UC","1000+100 UC"];
@@ -112,7 +112,7 @@ impl <'a>PlayerData<'a> {
         }
         if !selected{
             println!("paket salah");
-            put_back_port(port);
+            // put_back_port(port);
             return
         }
         println!("start pembelian {} ke akun {} menggunakan {}", self.uc_selected, self.pubg_id, self.hp_selected);
@@ -122,7 +122,8 @@ impl <'a>PlayerData<'a> {
             Err(_) => println!("error running background")
         };
         // let driver = WebDriver::new_session(SessionSettings::default(), caps).await?;
-        let driver = WebDriver::new(&*format!("http://localhost:{}", port), caps).await.unwrap();
+        // let driver = WebDriver::new(&*format!("http://localhost:{}", port), caps).await.unwrap();
+        let driver = WebDriver::new("http://localhost:9515", caps).await.unwrap();
         // let cookies = login_fb(driver.clone()).await;
         driver.goto("https://www.midasbuy.com/midasbuy/id/buy/pubgm?sc=os_upoint&from=__mds_buy_duniagames").await.unwrap();
         
@@ -149,7 +150,7 @@ impl <'a>PlayerData<'a> {
                         tokio::time::sleep(tokio::time::Duration::from_millis(200)).await;
                         driver.clone().quit().await.unwrap();
                         println!("tidak ada close button");
-                        put_back_port(port);
+                        // put_back_port(port);
                         return
                     }
                     println!("tidak ada close button, we try again");
@@ -186,7 +187,7 @@ impl <'a>PlayerData<'a> {
         match res {
             Ok(_) => (),
             Err(_) => {
-                put_back_port(port);
+                // put_back_port(port);
                 return;
             }
         }
@@ -209,7 +210,7 @@ impl <'a>PlayerData<'a> {
         tokio::time::sleep(tokio::time::Duration::from_millis(5000)).await;
     
         driver.quit().await.unwrap();
-        put_back_port(port);
+        // put_back_port(port);
     }
 
     async fn input_id_and_select_item(&'a self, driver: WebDriver, buy: bool, paket: usize) -> Result<String, String>{
@@ -332,15 +333,15 @@ impl <'a>PlayerData<'a> {
     }
 
     pub async fn check_id(&'a self, db: Data<Database>) -> Result<String, String>{
-        let port: String;
-        let port_res = get_port();
-        match port_res {
-            Some(res) => {port = res},
-            None=>{
-                println!("mencapai limit");
-                return Err("mencapai limit".to_string());
-            }
-        }
+        // let port: String;
+        // let port_res = get_port();
+        // match port_res {
+        //     Some(res) => {port = res},
+        //     None=>{
+        //         println!("mencapai limit");
+        //         return Err("mencapai limit".to_string());
+        //     }
+        // }
         let account_query = db.get_pubg_account(self.pubg_id.to_string());
         match account_query {
             Some(account) => {
@@ -355,7 +356,7 @@ impl <'a>PlayerData<'a> {
             Err(_) => println!("error running background")
         };
 
-        let driver = WebDriver::new(&*format!("http://localhost:{}", port), caps).await.unwrap();
+        let driver = WebDriver::new("http://localhost:9515", caps).await.unwrap();
         driver.goto("https://www.midasbuy.com/midasbuy/id/buy/pubgm?sc=os_upoint&from=__mds_buy_duniagames").await.unwrap();
         let a = driver.find_all(By::ClassName("close-btn")).await.unwrap();
         let aa = a.last();
@@ -366,7 +367,7 @@ impl <'a>PlayerData<'a> {
             None=> {
                 driver.clone().quit().await.unwrap();
                 println!("error to close-btn");
-                put_back_port(port);
+                // put_back_port(port);
                 return Err("error to close-btn".to_string());
             }
         }
@@ -383,7 +384,7 @@ impl <'a>PlayerData<'a> {
                 return Ok(get_name);
             },
             Err(msg) => {
-                put_back_port(port);
+                // put_back_port(port);
                 return Err(msg);
             }
         }
